@@ -20,5 +20,11 @@ public class CategoriaService {
 		return obj.orElseThrow(() -> new ObjectNotFoundException(
 				"Objeto não encontrado! Id: " + id + ", Tipo: " + Categoria.class.getName()));
 	}
+	
+	public Categoria insert(Categoria obj) {
+		//Garantir que sempre será uma inclusão
+		obj.setId(null);
+		return repo.save(obj);
+	}
 
 }

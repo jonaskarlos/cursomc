@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.jonas.cursomc.domain.Cidade;
 import com.jonas.cursomc.domain.Cliente;
@@ -46,6 +47,7 @@ public class ClienteService {
 		return repo.save(newObj);
 	}
 	
+	@Transactional
 	public Cliente insert(Cliente obj) {
 		//Garantir que sempre será uma inclusão, colando o codigo para null
 		obj.setId(null);
@@ -59,7 +61,7 @@ public class ClienteService {
 		try {
 			repo.deleteById(id);
 		}catch(DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir porque há entidades relacionadas.");
+			throw new DataIntegrityException("Não é possível excluir porque há pedidos relacionadas.");
 			
 		}
 	}
@@ -79,10 +81,11 @@ public class ClienteService {
 	
 	public Cliente fromDTO(ClienteNewDTO clienteNewDTO) {
 		Cliente cli = new Cliente(null, clienteNewDTO.getNome(), clienteNewDTO.getEmail(), clienteNewDTO.getCpfOuCnpj(), TipoCliente.toEnum(clienteNewDTO.getTipo()));
-		Optional<Cidade> cidade = cidadeRepository.findById(clienteNewDTO.getCidadeId());
+		//Optional<Cidade> cidade = cidadeRepository.findById(clienteNewDTO.getCidadeId());
+		Cidade cidade = new Cidade(clienteNewDTO.getCidadeId(), null, null);
 		
 		Endereco end = new Endereco(null, clienteNewDTO.getLogradouro(), clienteNewDTO.getNumero(), clienteNewDTO.getComplemento(),
-				clienteNewDTO.getBairro(), clienteNewDTO.getCep(), cli, cidade.get());
+				clienteNewDTO.getBairro(), clienteNewDTO.getCep(), cli, cidade);
 		
 		cli.getEnderecos().add(end);
 		cli.getTelefones().add(clienteNewDTO.getTelefone1());

@@ -29,8 +29,9 @@ public class ClienteService {
 	}
 	
 	public Cliente update(Cliente obj) {
-		find(obj.getId());
-		return repo.save(obj);
+		Cliente newObj = find(obj.getId());
+		updateData(newObj, obj);
+		return repo.save(newObj);
 	}
 	
 	public void delete(Integer id) {
@@ -38,7 +39,7 @@ public class ClienteService {
 		try {
 			repo.deleteById(id);
 		}catch(DataIntegrityViolationException e) {
-			throw new DataIntegrityException("Não é possível excluir uma categoria que possui produtos.");
+			throw new DataIntegrityException("Não é possível excluir porque há entidades relacionadas.");
 			
 		}
 	}
@@ -52,8 +53,13 @@ public class ClienteService {
 		return repo.findAll();
 	}
 	
-	public Cliente fromDTO(ClienteDTO categoriaDTO) {
-		throw new UnsupportedOperationException();
+	public Cliente fromDTO(ClienteDTO clienteDTO) {
+		return new Cliente(clienteDTO.getId(), clienteDTO.getNome(), clienteDTO.getEmail(), null, null);
+	}
+	
+	private void updateData(Cliente newObj, Cliente obj) {
+		newObj.setNome(obj.getNome());
+		newObj.setEmail(obj.getEmail());
 	}
 
 }

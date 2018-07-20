@@ -34,7 +34,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 	//Somente os méodos GET são permitidos para Produtos e Categorias
 	private static final String[] PUBLIC_MATOHES_GET = {
 			"/produtos/**",
-			"/categorias/**"
+			"/categorias/**",
+			"/clientes/**"
+			
 			
 	};
 	
